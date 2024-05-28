@@ -1,0 +1,38 @@
+version: '2.1'
+services:
+  spider-redis:
+    image: redis:6.2.6
+    container_name: spider-redis
+    restart: always
+    volumes:
+      # <本地配置文件> : <docker中的配置文件> : <ro:docker容器对该文件只读,默认是rw可读可写>
+      - ../redis/redis.conf:/etc/redis/redis.conf:ro
+      # <本地数据目录> : <docker中的数据目录>
+      - ../redis/data:/data
+      # <本地日志目录> : <docker中的日志目录>
+      # redis不具有自动创建/logs的权限，如果redis.conf中指定的相对位置,则数据目录已经可以映射出日志文件
+      - ../redis/logs:/logs
+    # docker执行的启动命令
+    command: redis-server /etc/redis/redis.conf
+    ports:
+      - 6390:6379
+    environment:
+      - TZ=Asia/Chongqing
+  spider-redis-test:
+    image: redis:6.2.6
+    container_name: spider-redis-test
+    restart: always
+    volumes:
+      # <本地配置文件> : <docker中的配置文件> : <ro:docker容器对该文件只读,默认是rw可读可写>
+      - ../redis/redis_test.conf:/etc/redis/redis_test.conf:ro
+      # <本地数据目录> : <docker中的数据目录>
+      - ../redis/data_test:/data
+      # <本地日志目录> : <docker中的日志目录>
+      # redis不具有自动创建/logs的权限，如果redis.conf中指定的相对位置,则数据目录已经可以映射出日志文件
+      - ../redis/logs_test:/logs
+    # docker执行的启动命令
+    command: redis-server /etc/redis/redis_test.conf
+    ports:
+      - 6391:6379
+    environment:
+      - TZ=Asia/Chongqing
